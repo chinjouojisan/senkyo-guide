@@ -649,6 +649,9 @@ function backToTop() {
   #screenMayor {
     display: none;
     min-height: 100vh;
+    max-width: 640px;
+    margin: 0 auto;
+    box-shadow: 0 0 40px rgba(0,0,0,0.10);
     background: linear-gradient(160deg, #fffde7 0%, #fff8e1 100%);
   }
   #screenGikai {
@@ -855,6 +858,41 @@ function backToTop() {
     font-size: 10px; font-weight: 700; color: #b8860b; background: #fff8dc;
     padding: 1px 7px; border-radius: 999px; white-space: nowrap;
   }
+
+  /* ===== 政治家タイプ レーダー（参考値・試作） ===== */
+  .radar-section { border-bottom: 1px solid var(--border); background: var(--surface); }
+  .radar-card { overflow: hidden; }
+  .radar-head { background: linear-gradient(135deg,#1a9ed4 0%,#0e7ab5 60%,#14a882 100%); color: #fff; padding: 12px 16px; }
+  .radar-head h2 { font-size: 0.92rem; font-weight: 900; letter-spacing: .02em; }
+  .radar-head .sub { font-size: 0.66rem; opacity: .9; margin-top: 2px; font-weight: 500; }
+  .radar-type { display: flex; align-items: center; gap: 10px; padding: 13px 16px 6px; }
+  .radar-type .emoji { font-size: 1.7rem; line-height: 1; }
+  .radar-type .tt { font-size: 1.02rem; font-weight: 900; color: var(--accent); }
+  .radar-type .score { margin-left: auto; font-size: 0.66rem; color: var(--text-muted); font-weight: 700; text-align: right; }
+  .radar-type .score b { display: block; font-size: 1.15rem; color: var(--text); font-weight: 900; }
+  .radar-svg-wrap { padding: 2px 6px 6px; }
+  .radar-card svg { display: block; width: 100%; height: auto; }
+  .radar-card .axis-label { font-size: 11px; font-weight: 700; fill: var(--text); }
+  .radar-card .axis-val { font-size: 10px; font-weight: 900; fill: var(--accent); }
+  .radar-diag { padding: 4px 16px 14px; }
+  .radar-diag p { font-size: 0.78rem; line-height: 1.75; color: var(--text); }
+  .radar-note { margin: 10px 16px 16px; padding: 10px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; font-size: 0.66rem; line-height: 1.7; color: var(--text-muted); }
+  .radar-note b { color: var(--accent); }
+  .radar-basis { margin: 0 16px 16px; }
+  .radar-basis-title { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); margin: 6px 0 6px; }
+  .radar-basis table { width: 100%; border-collapse: collapse; font-size: 0.66rem; }
+  .radar-basis th, .radar-basis td { padding: 6px 8px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+  .radar-basis th { color: var(--text-muted); font-weight: 700; background: var(--surface2); }
+  .radar-basis td.v { font-weight: 900; color: var(--accent); text-align: center; white-space: nowrap; }
+  .radar-basis .bar { height: 5px; border-radius: 99px; background: var(--border); margin-top: 4px; overflow: hidden; }
+  .radar-basis .bar > i { display: block; height: 100%; background: linear-gradient(90deg,#1a9ed4,#14a882); }
+  .radar-basis caption { caption-side: bottom; font-size: 0.6rem; color: var(--text-muted); text-align: left; padding-top: 8px; line-height: 1.6; }
+  .radar-acc-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 11px 16px; background: var(--accent-light); border: none; border-top: 1px solid var(--border); font-family: 'Noto Sans JP', sans-serif; font-size: 0.74rem; color: var(--accent); font-weight: 700; cursor: pointer; text-align: left; }
+  .radar-acc-toggle .arrow { font-size: 0.7rem; color: var(--accent2); transition: transform 0.2s; }
+  .radar-acc-toggle.open .arrow { transform: rotate(90deg); }
+  .radar-acc-body { display: none; }
+  .radar-acc-body.open { display: block; }
+  .radar-acc-close { display: block; width: calc(100% - 32px); margin: 0 16px 16px; padding: 9px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--surface2); color: var(--text-muted); font-family: 'Noto Sans JP', sans-serif; font-size: 0.74rem; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -974,6 +1012,42 @@ function backToTop() {
 
         <!-- 基本情報パネル -->
         <div id="mayorInfoPanel" style="display:none; border-bottom:1px solid var(--border); background:var(--surface2); padding:12px 16px; flex-direction:column; align-items:center;"></div>
+
+        <!-- 政治家タイプ レーダー（参考値） -->
+        <div class="radar-section" id="mayorRadarSection" style="display:none;">
+          <div class="radar-card">
+            <div class="radar-head">
+              <h2>🧭 政治家タイプ（参考値）</h2>
+              <div class="sub" id="mayorRadarSub">公約・発信・インタビューの分析から自動算出</div>
+            </div>
+            <div class="radar-type">
+              <span class="emoji" id="mayorRadarEmoji">🧭</span>
+              <span class="tt" id="mayorRadarType">—</span>
+              <span class="score">総合 参考値<b id="mayorRadarAvg">—</b></span>
+            </div>
+            <div class="radar-svg-wrap">
+              <svg id="mayorRadarSvg" viewBox="0 0 360 300" role="img" aria-label="政治家タイプのレーダーチャート"></svg>
+            </div>
+            <div class="radar-diag"><p id="mayorRadarDiag"></p></div>
+            <button class="radar-acc-toggle" id="mayorRadarBasisAccToggle" onclick="toggleAccordion('mayorRadarBasisAcc')">
+              📊 各軸の算出根拠を見る <span class="arrow">▶</span>
+            </button>
+            <div class="radar-acc-body" id="mayorRadarBasisAccBody">
+            <div class="radar-basis">
+              <div class="radar-basis-title">■ 各軸の算出根拠（既存データから機械的に算出）</div>
+              <table>
+                <thead><tr><th>軸</th><th style="width:46px;">参考値</th><th>主な材料</th></tr></thead>
+                <tbody id="mayorRadarBasis"></tbody>
+                <caption>※ 0〜100の参考値。政策力は公約5軸（具体性・直結度・実現性ほか）、守備範囲はカバレッジ・公約数・告知発信、発信・説明力は発信スコアと説明、対話・調整力は発信の主張と現職経験、理念・情熱は公約の言葉の強さを主材料に算出。</caption>
+              </table>
+            </div>
+            <div class="radar-note">
+              <b>これは「優劣」ではなく「タイプ（傾向）」の可視化です。</b>　数値は確定評価ではなく、既存スコアとインタビューの有無などから算出した参考値で、本人の人物像を断定するものではありません。とくに「対話・調整力」は直接の判断材料が少ないため、参考の度合いが高い軸です。
+            </div>
+              <button class="radar-acc-close" onclick="toggleAccordion('mayorRadarBasisAcc')">▲ 閉じる</button>
+            </div>
+          </div>
+        </div>
 
     
     <!-- 総合評価 -->
@@ -1172,6 +1246,14 @@ function backToTop() {
             <div class="kouhou-pending" id="mayorKouhouPending">告示日（6/21）以降に掲載予定</div>
             <img id="mayorKouhouImg" class="kouhou-img" src="" alt="選挙公報" style="display:none;" onclick="toggleKouhouZoom(this)">
           </div>
+        </div>
+
+        <!-- 通信簿リンク（現職市議の場合のみ） -->
+        <div id="mayorTsushinboWrap" class="tsushinbo-link-wrap" style="display:none;">
+          <div class="tsushinbo-label">この候補者の市議としての4年間の活動実績</div>
+          <a id="mayorTsushinboLink" href="https://kakogawa-giin-map.com" target="_blank" class="tsushinbo-link">
+            📊 加古川市議会通信簿で実績を見る →
+          </a>
         </div>
 
       </div>
@@ -1825,6 +1907,42 @@ function backToTop() {
 
     <!-- 議員情報パネル -->
     <div id="memberInfoPanel" style="display:none; border-bottom:1px solid var(--border); background:var(--surface2); padding:12px 16px; flex-direction:column; align-items:center;"></div>
+
+    <!-- 政治家タイプ レーダー（参考値・試作） -->
+    <div class="radar-section" id="radarSection" style="display:none;">
+      <div class="radar-card">
+        <div class="radar-head">
+          <h2>🧭 政治家タイプ（参考値）</h2>
+          <div class="sub" id="radarSub">公約・発信・インタビューの分析から自動算出</div>
+        </div>
+        <div class="radar-type">
+          <span class="emoji" id="radarEmoji">🧭</span>
+          <span class="tt" id="radarType">—</span>
+          <span class="score">総合 参考値<b id="radarAvg">—</b></span>
+        </div>
+        <div class="radar-svg-wrap">
+          <svg id="radarSvg" viewBox="0 0 360 300" role="img" aria-label="政治家タイプのレーダーチャート"></svg>
+        </div>
+        <div class="radar-diag"><p id="radarDiag"></p></div>
+        <button class="radar-acc-toggle" id="radarBasisAccToggle" onclick="toggleAccordion('radarBasisAcc')">
+          📊 各軸の算出根拠を見る <span class="arrow">▶</span>
+        </button>
+        <div class="radar-acc-body" id="radarBasisAccBody">
+        <div class="radar-basis">
+          <div class="radar-basis-title">■ 各軸の算出根拠（既存データから機械的に算出）</div>
+          <table>
+            <thead><tr><th>軸</th><th style="width:46px;">参考値</th><th>主な材料</th></tr></thead>
+            <tbody id="radarBasis"></tbody>
+            <caption>※ 0〜100の参考値。政策力は公約5軸（具体性・直結度・実現性ほか）、守備範囲はカバレッジ・公約数・告知発信、発信・説明力は発信スコアと説明、対話・調整力は発信の主張と現職経験、理念・情熱は公約の言葉の強さを主材料に算出。</caption>
+          </table>
+        </div>
+        <div class="radar-note">
+          <b>これは「優劣」ではなく「タイプ（傾向）」の可視化です。</b>　数値は確定評価ではなく、既存スコアとインタビューの有無などから算出した参考値で、本人の人物像を断定するものではありません。とくに「対話・調整力」は直接の判断材料が少ないため、参考の度合いが高い軸です。
+        </div>
+          <button class="radar-acc-close" onclick="toggleAccordion('radarBasisAcc')">▲ 閉じる</button>
+        </div>
+      </div>
+    </div>
 
 
     <!-- 総合評価 -->
@@ -3197,7 +3315,12 @@ function selectMember(idx, scroll) {
   gradeEl.style.color = gc;
   gradeEl.style.background = gc + '18';
 
-  // スコアタブ初期化（公約タブをデフォルト表示）
+  // 政治家タイプ レーダー（参考値・試作）
+  renderRadar(m);
+
+  // スコアタブ初期化：両パネルとも値を入れてから公約タブを表示
+  // （発信パネルは渡したタブ側しか描画されないため、先に発信側も流し込む）
+  switchScoreTab('shinpyo', m);
   switchScoreTab('promise', m);
 
   // 選挙公報
@@ -3230,6 +3353,151 @@ function selectMember(idx, scroll) {
   if (scroll) {
     safeScrollToElement(document.getElementById('detailSection'), SCROLL_OFFSET, 'smooth', 10);
   }
+}
+
+// ===== 政治家タイプ レーダー（参考値）共通ロジック =====
+// 感情・共感・価値・情熱 系の語彙（「言葉の強さ」判定用・調整可）
+const RADAR_EMO_WORDS = ['共に','ともに','一緒','みんな','みなさん','寄り添','つなが','絆','支え合','助け合','誰一人','取り残さ','居場所','仲間','声を聴','耳を傾','希望','未来','夢','挑戦','チャレンジ','変え','変わ','変革','情熱','想い','思い','願い','志','約束','守る','守り','育む','はぐくむ','輝','前へ','次世代','子どもたちの','平和','公正','公平','平等','人権','自由','尊厳','命','いのち','幸せ','幸福','安心','笑顔','やさし','優し','あたたか','温か','豊か','元気','活気','ぬくもり','心の','一人ひとり','個性','必ず','全力','本気','真剣','諦め','あきらめ','負け','立ち上が','責任を持','覚悟','信念','使命'];
+
+// 実インタビュー記事がある候補（コード）。これ以外でinterviewUrl有り＝メッセージ扱い、無し＝無し扱い。
+const RADAR_INTERVIEW_CODES = ['C007','C014','C015','C018','C032','C036','C037'];
+
+// 公約文（本人の言葉）から感情・価値語の密度を0〜100で算出。短い公約は信頼度で減衰。
+function radarEmoScore(promises) {
+  if (!promises || !promises.length) return 0;
+  const text = promises.join(' ');
+  const chars = Math.max(1, text.length);
+  let distinct = 0;   // 同じ語の繰り返しは数えない（テンプレ・生成文の水増し対策）
+  for (let wi = 0; wi < RADAR_EMO_WORDS.length; wi++) {
+    if (text.indexOf(RADAR_EMO_WORDS[wi]) !== -1) distinct++;
+  }
+  const dens = distinct / chars * 1000;     // 1000字あたりの異なり語数
+  const lc = Math.min(1.0, chars / 100);    // 長さ信頼（100字未満は減衰）
+  return Math.round(Math.min(100, dens / 40 * 100) * lc);
+}
+
+function buildRadarAxes(P, S, intvScore, siteBonus, isIncumbent, emo, promCount) {
+  P = P || {}; S = S || {}; emo = emo || 0;
+  const n = {
+    g1:(P.p1||0)/35*100, g2:(P.p2||0)/30*100, g3:(P.p3||0)/25*100,
+    g4:(P.p4||0)/10*100, g5:(P.p5||0)/30*100,
+    pAll:((P.p1||0)+(P.p2||0)+(P.p3||0)+(P.p4||0)+(P.p5||0))/130*100,
+    pc:Math.min(100,(promCount||0)/8*100),
+    sD:(S.d||0)/30*100, sE:(S.e||0)/30*100, sF:(S.f||0)/30*100, sG:Math.min(100,(S.g||0)/30*100),
+    sTotal:Math.min(100,(S.k||0)/105*100), sCount:Math.min(100,(S.j||0)/70*100),
+    interview:intvScore||0, incumbent:isIncumbent?100:0
+  };
+  const axes = [
+    { key:'理念・情熱',      val:0.55*emo+0.25*n.interview+0.05*((n.sD+n.sE)/2)+0.15*n.pAll, basis:'公約の言葉の強さ（感情・価値・情熱語の異なり語数）とインタビューの有無を主軸に、公約の総量を加味' },
+    { key:'政策力',          val:0.40*n.g1+0.25*n.g2+0.25*n.g5+0.10*n.g4, basis:'公約の具体性・市政直結度・実現性・カバレッジ（政策の深さ・質）' },
+    { key:'守備範囲・総合性', val:0.50*n.g4+0.35*n.pc+0.15*n.sG, basis:'公約のカバレッジ・公約数に、告知・共有の発信を加味（扱う範囲の広さ）' },
+    { key:'発信・説明力',    val:0.40*n.sTotal+0.20*n.sCount+0.20*n.g3+0.20*n.interview, basis:'発信スコア・発信数に、公約のわかりやすさ・インタビューを加味' },
+    { key:'対話・調整力',    val:0.45*((n.sD+n.sE)/2)+0.20*n.g1+0.15*n.g2+0.20*n.incumbent, basis:'発信での主張・想い（言語化）を主軸に、公約の具体性・直結度・現職経験を加味' }
+  ];
+  axes.forEach(a => a.val = Math.round(a.val));
+  return axes;
+}
+
+// 軸の分布からタイプを機械的に判定（再現性重視・断定しない）
+function classifyRadar(axes) {
+  const sorted = axes.slice().sort((a,b)=>b.val-a.val);
+  const top = sorted[0], second = sorted[1], low = sorted[sorted.length-1];
+  const avg = Math.round(axes.reduce((s,a)=>s+a.val,0)/axes.length);
+  const spread = top.val - low.val;
+  const contentPeak = Math.max.apply(null, axes.filter(function(a){return a.key!=='対話・調整力';}).map(function(a){return a.val;}));
+  let emoji='🧭', type='オールラウンドタイプ', lead='特定の軸に偏らず、全体にバランスのとれた傾向です。';
+  if (contentPeak < 35) {
+    emoji='🌱'; type='これからタイプ'; lead='現時点では参考にできるデータが少なく、傾向の確度は低めです。';
+  } else if (spread <= 12) {
+    emoji='🧭'; type='オールラウンドタイプ'; lead='特定の軸に偏らず、全体にバランスのとれた傾向です。';
+  } else if (top.key==='政策力') {
+    emoji='🛠️'; type='政策タイプ'; lead='公約の具体性や市政との結びつき、実現性が相対的に強く、政策の深さに軸足がある傾向です。';
+  } else if (top.key==='守備範囲・総合性') {
+    emoji='🗺️'; type='総合・守備範囲タイプ'; lead='幅広い分野を公約でカバーし、情報の告知・共有も行う、扱う範囲の広さに特徴がある傾向です。';
+  } else if (top.key==='発信・説明力') {
+    emoji='📣'; type='発信・説明タイプ'; lead='発信の量や分かりやすい説明など、有権者に伝える動きに特徴がある傾向です。';
+  } else if (top.key==='理念・情熱') {
+    emoji='🔥'; type='理念・ビジョンタイプ'; lead='感情・価値を込めた言葉で理念やビジョンを前面に出す傾向です。';
+  } else if (top.key==='対話・調整力') {
+    emoji='🤝'; type='調整・現場タイプ'; lead='発信での主張・想いの言語化や現職経験など、対話・調整の材料が比較的そろっている傾向です。';
+  }
+  const diag = top.key+'('+top.val+')が最も高く、'+second.key+'('+second.val+')がそれに続きます。一方で'+low.key+'('+low.val+')が最も低い傾向です。'+lead+'数値はいずれも既存スコアからの機械的な参考値で、人物像を断定するものではありません。';
+  return { emoji:emoji, type:type, diag:diag };
+}
+
+function drawRadar(svg, axes) {
+  svg.innerHTML = '';
+  const NS = 'http://www.w3.org/2000/svg';
+  const cx=180, cy=148, R=98, N=axes.length;
+  const ang = i => (-90 + 360/N*i) * Math.PI/180;
+  const pt = (i,r)=>[cx + r*Math.cos(ang(i)), cy + r*Math.sin(ang(i))];
+  const el = (tag,attrs)=>{ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); return e; };
+  [0.25,0.5,0.75,1].forEach(f=>{
+    const pts = axes.map((_,i)=>pt(i,R*f).map(v=>v.toFixed(1)).join(',')).join(' ');
+    svg.appendChild(el('polygon',{points:pts, fill:'none', stroke:'#9ed4ee', 'stroke-width':1, opacity:f===1?0.9:0.5}));
+  });
+  axes.forEach((a,i)=>{
+    const [x,y]=pt(i,R);
+    svg.appendChild(el('line',{x1:cx,y1:cy,x2:x.toFixed(1),y2:y.toFixed(1), stroke:'#9ed4ee','stroke-width':1, opacity:.6}));
+    const [lx,ly]=pt(i,R+24);
+    let anchor='middle';
+    if(lx>cx+6) anchor='start'; else if(lx<cx-6) anchor='end';
+    const t=el('text',{x:lx.toFixed(1),y:(ly+4).toFixed(1),'text-anchor':anchor,'class':'axis-label'}); t.textContent=a.key; svg.appendChild(t);
+    const tv=el('text',{x:lx.toFixed(1),y:(ly+16).toFixed(1),'text-anchor':anchor,'class':'axis-val'}); tv.textContent=a.val; svg.appendChild(tv);
+  });
+  const dpts = axes.map((a,i)=>pt(i,R*a.val/100).map(v=>v.toFixed(1)).join(',')).join(' ');
+  svg.appendChild(el('polygon',{points:dpts, fill:'rgba(14,122,181,0.22)', stroke:'#0e7ab5','stroke-width':2.2,'stroke-linejoin':'round'}));
+  axes.forEach((a,i)=>{
+    const [x,y]=pt(i,R*a.val/100);
+    svg.appendChild(el('circle',{cx:x.toFixed(1),cy:y.toFixed(1),r:3.2, fill:'#0e7ab5', stroke:'#fff','stroke-width':1.5}));
+  });
+}
+
+function fillRadarMeta(prefix, m, axes, info) {
+  const avg = Math.round(axes.reduce((s,a)=>s+a.val,0)/axes.length);
+  document.getElementById(prefix+'Avg').textContent = avg;
+  document.getElementById(prefix+'Emoji').textContent = info.emoji;
+  document.getElementById(prefix+'Type').textContent = info.type;
+  document.getElementById(prefix+'Sub').textContent = (m.name ? m.name + ' ／ ' : '') + '公約・発信・インタビューの分析から自動算出';
+  document.getElementById(prefix+'Diag').innerHTML = info.diag;
+  const tb = document.getElementById(prefix+'Basis');
+  tb.innerHTML = '';
+  axes.forEach(a=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML = '<td>'+a.key+'<div class="bar"><i style="width:'+a.val+'%"></i></div></td><td class="v">'+a.val+'</td><td>'+a.basis+'</td>';
+    tb.appendChild(tr);
+  });
+  // アコーディオンは候補ごとに初期状態（閉）へ戻す
+  const accBody = document.getElementById(prefix+'BasisAccBody');
+  const accTog = document.getElementById(prefix+'BasisAccToggle');
+  if (accBody) accBody.classList.remove('open');
+  if (accTog) accTog.classList.remove('open');
+}
+
+// 市議候補レーダー（公約=m.promiseScore / 発信=m.shinpyo）
+function renderRadar(m) {
+  const sec = document.getElementById('radarSection');
+  if (!sec) return;
+  if (!m || !m.promiseScore) { sec.style.display = 'none'; return; }
+  const intv = (RADAR_INTERVIEW_CODES.indexOf(m.code) >= 0) ? 100 : (m.interviewUrl ? 50 : 0);
+  const axes = buildRadarAxes(m.promiseScore, m.shinpyo, intv, (m.radar && m.radar.siteBonus) || 0, m.status === 'incumbent', radarEmoScore(m.promises), (m.promises ? m.promises.length : 0));
+  const info = (m.radar && m.radar.type) ? { emoji:m.radar.emoji || '🧭', type:m.radar.type, diag:m.radar.diag || '' } : classifyRadar(axes);
+  drawRadar(document.getElementById('radarSvg'), axes);
+  fillRadarMeta('radar', m, axes, info);
+  sec.style.display = 'block';
+}
+
+// 市長候補レーダー（公約=m.p / 発信=m.s）
+function renderMayorRadar(m) {
+  const sec = document.getElementById('mayorRadarSection');
+  if (!sec) return;
+  if (!m || !m.p) { sec.style.display = 'none'; return; }
+  const intv = (RADAR_INTERVIEW_CODES.indexOf(m.code) >= 0) ? 100 : (m.interviewUrl ? 50 : 0);
+  const axes = buildRadarAxes(m.p, m.s, intv, (m.radar && m.radar.siteBonus) || 0, m.status === 'incumbent', radarEmoScore(m.promises), (m.promises ? m.promises.length : 0));
+  const info = (m.radar && m.radar.type) ? { emoji:m.radar.emoji || '🧭', type:m.radar.type, diag:m.radar.diag || '' } : classifyRadar(axes);
+  drawRadar(document.getElementById('mayorRadarSvg'), axes);
+  fillRadarMeta('mayorRadar', m, axes, info);
+  sec.style.display = 'block';
 }
 
 function silhouetteSvg() {
@@ -3539,7 +3807,7 @@ const mayorCandidates = {
     promiseCritical: "金額を明示した提案には独自性があり、「何にいくら使うか」を語ろうとする姿勢は、抽象的なスローガンに終始する候補より一歩踏み込んでいます。しかし、その財源論は土台から揺らいでいます。看板の「70億円削減」は、播磨臨海高速道路（約1兆円）や大型駅前開発のストップによって生み出すとされますが、播磨臨海道路は県・国の事業であり、市長といえども単独で建設を止めて市の財源に振り替えられるものではありません。つまり「削減して生まれる70億円」という前提そのものが、市の権限の外にある事業に依存しています。投資側の13の無料サービスや各種3億円の施策も、毎年継続して必要な経常的支出であり、一度きりの削減では賄いきれません。発想の大胆さと、市が実際に動かせる財源の現実とのギャップが大きく、「数字が具体的であること」と「その数字が実現可能であること」は別物だという点を、有権者は冷静に見極める必要があります。",
     promiseCheck: "・「70億円削減」の柱である播磨臨海高速道路の建設ストップは、県・国の事業です。市長として、これを実際に止めて市の財源に振り替えることが本当に可能なのか、その根拠を尋ねてみましょう。\n・13の無料サービスや「+70億円投資」の各施策は、毎年継続して必要な経常的な支出です。一度きりの削減ではなく、継続的な財源をどう確保するのかを確認しましょう。\n・大型駅前開発の「ストップ・縮小」は、すでに進んでいる事業の契約や補償をどう扱うのかを聞いてみる価値があります。途中で止める費用も含めて、純粋にいくら浮くのかが論点です。\n・掲げた施策のうち、市の権限と財源だけで任期内に実現できるものはどれかを整理してもらうと、構想と実行の境目が見えてきます。",
     s:{d:3,e:0,f:1,g:0,j:4,k:14,rank:'E',rankNum:2}, shinpyoAi:'発信数の合計は4件と少なく、4カテゴリの中ではわずかに「意見・政策」に比重があります。発信の総量が限られているため、活動の様子や考え・価値観が継続的に積み上がっている状態ではなく、現時点では発信内容から政策スタンスや人物像を読み取る材料は多くありません。発信のチャネル自体はあるので、投稿の量と頻度を高め、日々の取り組みや考えを継続的に発信していくことで、伝わる情報が厚くなる余地が大きい段階です。' },
-  M004: { name:'橋本 みなみ',   yomi:'ハシモト ミナミ',  status:'new', statusLabel:'新人', age:29, gender:'女性', sub:'加古川市議会議員',
+  M004: { name:'橋本 みなみ',   yomi:'ハシモト ミナミ',  status:'new', statusLabel:'新人', age:29, gender:'女性', sub:'加古川市議会議員', tsushinboCode:'M016',
     info: '元加古川市議、ＳＮＳマーケティング会社社長（衆院議員公設秘書）産業能率大経営、加古川町溝之口', infoLink: 'https://x.com/minamikakogawa?lang=ja',
     photo: 'https://raw.githubusercontent.com/chinjouojisan/giin_photo/47067183561a61c9712331a78a258f710d986043/IMG_0144.jpg', photoStatus: 'ok',
     wcUrl: 'https://raw.githubusercontent.com/chinjouojisan/giin_photo/d935847e314725c802b76835145e19c562217222/%E6%A9%8B%E6%9C%AC%E3%81%BF%E3%81%AA%E3%81%BF%E5%80%99%E8%A3%9C%EF%BC%882..._wordcloud.png',
@@ -3665,6 +3933,17 @@ function showMayorDetail(code) {
     mayorKouhouPending.style.display = 'block';
   }
 
+  // 通信簿リンク（現職市議の場合のみ）
+  const mayorTsushinboWrap = document.getElementById('mayorTsushinboWrap');
+  if (mayorTsushinboWrap) {
+    if (m.tsushinboCode) {
+      mayorTsushinboWrap.style.display = 'block';
+      document.getElementById('mayorTsushinboLink').href = 'https://kakogawa-giin-map.com?m=' + m.tsushinboCode;
+    } else {
+      mayorTsushinboWrap.style.display = 'none';
+    }
+  }
+
   // 公約スコア
   const pTotal = m.p.p1 + m.p.p2 + m.p.p3 + m.p.p4 + m.p.p5;
   const sTotal = (m.s && m.s.k) || 0;
@@ -3676,6 +3955,9 @@ function showMayorDetail(code) {
   document.getElementById('mayorOverallShinpyo').textContent = sTotal;
   const grade = total>=160?'S':total>=130?'A':total>=100?'B':total>=70?'C':total>=40?'D':'E';
   document.getElementById('mayorOverallGrade').textContent = grade;
+
+  // 政治家タイプ レーダー（参考値）
+  renderMayorRadar(m);
 
   document.getElementById('mayorTabPromiseVal').textContent = pTotal + ' / 130';
   document.getElementById('mayorP0Val').textContent = pTotal;
