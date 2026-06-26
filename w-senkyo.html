@@ -616,25 +616,28 @@ function backToTop() {
   /* ===== トップ選択画面 ===== */
   #screenTop {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    min-height: 100vh; padding: 32px 20px;
+    min-height: 100vh; padding: 0 0 28px;
     background: linear-gradient(160deg, #1a9ed4 0%, #0e7ab5 55%, #14a882 100%);
   }
+  .top-hero-wrap { width: 100%; max-width: 600px; }
+  .top-hero-img { display: block; width: 100%; height: auto; box-shadow: 0 6px 20px rgba(0,0,0,0.22); }
+  .top-inner { padding: 22px 20px 0; }
   .top-title {
     color: #fff; font-size: 1.1rem; font-weight: 700; letter-spacing: 0.08em;
     text-align: center; margin-bottom: 6px;
   }
   .top-subtitle {
-    color: rgba(255,255,255,0.8); font-size: 0.78rem; text-align: center;
-    margin-bottom: 36px;
+    color: rgba(255,255,255,0.92); font-size: 0.8rem; text-align: center; font-weight: 500;
+    margin-bottom: 22px;
   }
   .top-election-btn {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    width: 100%; max-width: 340px; padding: 24px 20px;
-    border-radius: 18px; border: none; cursor: pointer;
-    margin-bottom: 16px; box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+    display: flex; flex-direction: row; align-items: center; gap: 14px;
+    width: 100%; max-width: 380px; padding: 13px 20px;
+    border-radius: 16px; border: none; cursor: pointer;
+    margin: 0 auto 12px; box-shadow: 0 5px 18px rgba(0,0,0,0.16);
     transition: transform 0.15s, box-shadow 0.15s;
     font-family: 'Noto Sans JP', sans-serif;
-    text-decoration: none;
+    text-decoration: none; text-align: left;
   }
   .top-election-btn:active { transform: scale(0.97); box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
   .top-election-btn.mayor {
@@ -645,10 +648,10 @@ function backToTop() {
     background: linear-gradient(135deg, #e3f2fd 0%, #90caf9 100%);
     color: #0d3a6e;
   }
-  .top-btn-icon { font-size: 2.2rem; margin-bottom: 8px; }
-  .top-btn-label { font-size: 0.72rem; font-weight: 500; opacity: 0.7; margin-bottom: 2px; }
-  .top-btn-title { font-size: 1.15rem; font-weight: 700; }
-  .top-btn-sub { font-size: 0.7rem; margin-top: 4px; opacity: 0.65; }
+  .teb-icon { font-size: 1.85rem; flex-shrink: 0; line-height: 1; }
+  .teb-body { display: flex; flex-direction: column; }
+  .teb-title { font-size: 1.05rem; font-weight: 700; }
+  .teb-sub { font-size: 0.7rem; margin-top: 1px; opacity: 0.7; }
   .top-date-note {
     color: rgba(255,255,255,0.75); font-size: 0.7rem; text-align: center; margin-top: 8px;
   }
@@ -949,28 +952,34 @@ function backToTop() {
 
 <!-- ===== トップ選択画面 ===== -->
 <div id="screenTop">
-  <div class="top-title">加古川市 ダブル選挙ガイド2026</div>
-  <div class="top-subtitle">告示日：6月21日　投開票日：6月28日</div>
+  <div class="top-hero-wrap">
+    <img class="top-hero-img" src="https://raw.githubusercontent.com/chinjouojisan/senkyo-guide/ade5d9136c4c0ca2c26333cc25bd0582fcb41fa3/ogp.PNG" alt="加古川市 ダブル選挙ガイド2026">
+    <div class="top-inner">
+      <div class="top-subtitle">告示日：6月21日　投開票日：6月28日</div>
 
-  <button class="top-election-btn mayor" onclick="showMayor()">
-    <div class="top-btn-icon">🏛️</div>
-    <div class="top-btn-label">加古川市</div>
-    <div class="top-btn-title">市長選挙</div>
-    <div class="top-btn-sub">候補者情報を見る →</div>
-  </button>
+      <button class="top-election-btn mayor" onclick="showMayor()">
+        <span class="teb-icon">🏛️</span>
+        <span class="teb-body">
+          <span class="teb-title">市長選挙</span>
+          <span class="teb-sub">候補者を見る →</span>
+        </span>
+      </button>
 
-  <button class="top-election-btn gikai" onclick="showGikai()">
-    <div class="top-btn-icon">🗳️</div>
-    <div class="top-btn-label">加古川市</div>
-    <div class="top-btn-title">市議会議員選挙</div>
-    <div class="top-btn-sub">候補者情報を見る →</div>
-  </button>
+      <button class="top-election-btn gikai" onclick="showGikai()">
+        <span class="teb-icon">🗳️</span>
+        <span class="teb-body">
+          <span class="teb-title">市議会議員選挙</span>
+          <span class="teb-sub">候補者を見る →</span>
+        </span>
+      </button>
 
-  <div style="display:flex; gap:10px; justify-content:center; margin-top:16px;">
-    <button class="hero-sub-btn" onclick="openDevModal()" style="background:rgba(255,255,255,0.18); border:1.5px solid rgba(255,255,255,0.4); color:#fff; border-radius:20px; padding:7px 16px; font-size:0.72rem; cursor:pointer; font-family:'Noto Sans JP',sans-serif;">📝 このサイトについて</button>
-    <button class="hero-sub-btn" onclick="openGuideModal()" style="background:rgba(255,255,255,0.18); border:1.5px solid rgba(255,255,255,0.4); color:#fff; border-radius:20px; padding:7px 16px; font-size:0.72rem; cursor:pointer; font-family:'Noto Sans JP',sans-serif;">📖 はじめての方へ</button>
+      <div style="display:flex; gap:10px; justify-content:center; margin-top:14px;">
+        <button class="hero-sub-btn" onclick="openDevModal()" style="background:rgba(255,255,255,0.18); border:1.5px solid rgba(255,255,255,0.4); color:#fff; border-radius:20px; padding:7px 16px; font-size:0.72rem; cursor:pointer; font-family:'Noto Sans JP',sans-serif;">📝 このサイトについて</button>
+        <button class="hero-sub-btn" onclick="openGuideModal()" style="background:rgba(255,255,255,0.18); border:1.5px solid rgba(255,255,255,0.4); color:#fff; border-radius:20px; padding:7px 16px; font-size:0.72rem; cursor:pointer; font-family:'Noto Sans JP',sans-serif;">📖 はじめての方へ</button>
+      </div>
+      <div class="top-date-note" style="margin-top:12px;">All rights © 加古川市議会議員マップ</div>
+    </div>
   </div>
-  <div class="top-date-note" style="margin-top:12px;">All rights © 加古川市議会議員マップ</div>
 </div>
 
 <!-- ===== 市長選画面 ===== -->
@@ -3408,7 +3417,7 @@ function buildRadarAxes(P, S, intvScore, siteBonus, isIncumbent, emo, promCount)
 }
 
 // 軸の分布から「形のタイプ」を機械的に判定（再現性重視・断定しない・ポップ表記）
-// しきい値はここで調整可：GAP_TOKKA=特化/二刀流の境（10〜12目安）、SPREAD_BALANCE=バランス判定の幅
+// しきい値はここで調整可：GAP_TOKKA=特化/ハイブリッドの境（10〜12目安）、SPREAD_BALANCE=バランス判定の幅、SIZE_L/M=チャート面積のサイズ境界
 function classifyRadar(axes) {
   const NICK = {
     '理念・情熱':      { nick:'ビジョナリー',     emoji:'🔥',  short:'理念' },
@@ -3420,10 +3429,17 @@ function classifyRadar(axes) {
   const ORDER = ['理念・情熱','政策力','守備範囲・総合性','発信・説明力','対話・調整力'];
   const GAP_TOKKA = 10;
   const SPREAD_BALANCE = 12;
+  const SIZE_L = 20, SIZE_M = 13;   // チャート面積(0-100)：≥20=ラージ / ≥13=ミドル / それ未満=スモール
   const sorted = axes.slice().sort((a,b)=>b.val-a.val);
   const top1 = sorted[0], top2 = sorted[1], low = sorted[sorted.length-1];
   const spread = top1.val - low.val;
   const gap12 = top1.val - top2.val;
+  // チャートの大きさ＝レーダー面積（0=なし〜100=理論満点）
+  const S72 = 0.9510565163;
+  let rawArea = 0;
+  for (let i = 0; i < axes.length; i++) rawArea += axes[i].val * axes[(i+1) % axes.length].val;
+  const areaPct = (0.5 * S72 * rawArea) / (0.5 * S72 * 5 * 100 * 100) * 100;
+  const SIZE = areaPct >= SIZE_L ? 'ラージ' : (areaPct >= SIZE_M ? 'ミドル' : 'スモール');
   let emoji, type, lead;
   if (top1.val < 35) {
     emoji='🌱'; type='未知数';
@@ -3433,12 +3449,12 @@ function classifyRadar(axes) {
     lead='5軸が平均的にそろう、大きな凸凹の少ない形です。';
   } else if (gap12 >= GAP_TOKKA) {
     const k = NICK[top1.key];
-    emoji=k.emoji; type=k.nick;
-    lead='5軸の中で「'+top1.key+'」が最も高く突出する形です。';
+    emoji=k.emoji; type=SIZE+'・'+k.nick;
+    lead='5軸の中で「'+top1.key+'」が最も高く突出する形です（頭のサイズはチャートの大きさ＝スコアの総量で、'+SIZE+'）。';
   } else {
     const pair = [top1.key, top2.key].sort((a,b)=>ORDER.indexOf(a)-ORDER.indexOf(b));
-    emoji='⚔️'; type=NICK[pair[0]].short+'×'+NICK[pair[1]].short+'の二刀流';
-    lead='「'+top1.key+'」と「'+top2.key+'」の2軸が高く、拮抗する形です。';
+    emoji='🧩'; type=NICK[pair[0]].short+'×'+NICK[pair[1]].short+'のハイブリッド';
+    lead='「'+top1.key+'」と「'+top2.key+'」の2軸が高く、組み合わさった形です。';
   }
   const diag = top1.key+'('+top1.val+')が最も高く、'+top2.key+'('+top2.val+')がそれに続きます。一方で'+low.key+'('+low.val+')が最も低い傾向です。'+lead+'これはレーダーの形の傾向を表す参考表示で、数値は既存スコアからの機械的な算出値です。人物の優劣や能力を断定するものではありません。';
   return { emoji:emoji, type:type, diag:diag };
