@@ -3126,7 +3126,8 @@ function buildRankingList(filter) {
 
 function rankingSelectMember(idx, filter) {
   selectMember(idx, true);
-  switchScoreTab(filter === 'promise' ? 'promise' : 'shinpyo');
+  // ランキングのどのタブから開いても、詳細は公約スコアをデフォルト表示にする
+  switchScoreTab('promise');
 }
 
 function heroGoInterview() {
