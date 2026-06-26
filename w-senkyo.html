@@ -9,6 +9,13 @@
 <meta property="og:title" content="加古川市 ダブル選挙ガイド2026">
 <meta property="og:description" content="加古川市議選・市長選2026 候補者ガイド。公約・インタビューを市民目線で紹介。">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://chinjouojisan.github.io/senkyo-guide/w-senkyo">
+<meta property="og:image" content="https://raw.githubusercontent.com/chinjouojisan/senkyo-guide/ade5d9136c4c0ca2c26333cc25bd0582fcb41fa3/ogp.PNG">
+<meta property="og:image:alt" content="加古川市 ダブル選挙ガイド2026">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="加古川市 ダブル選挙ガイド2026">
+<meta name="twitter:description" content="加古川市議選・市長選2026 候補者ガイド。公約・インタビューを市民目線で紹介。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/chinjouojisan/senkyo-guide/ade5d9136c4c0ca2c26333cc25bd0582fcb41fa3/ogp.PNG">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
 // ===== 画面切り替え =====
@@ -356,12 +363,13 @@ function backToTop() {
     background: var(--surface2); border: 1px solid var(--border);
     border-radius: 8px; padding: 12px 14px;
   }
-  .promise-list-inner ol { margin: 0; padding-left: 1.2em; }
-  .promise-list-inner li {
-    font-size: 0.82rem; line-height: 1.55; color: var(--text);
-    margin-bottom: 7px;
-  }
-  .promise-list-inner li:last-child { margin-bottom: 0; }
+  .promise-list-inner .promise-group { margin-bottom: 13px; }
+  .promise-list-inner .promise-group:last-child { margin-bottom: 0; }
+  .promise-list-inner .promise-head { display: block; font-weight: 700; color: var(--accent); font-size: 0.82rem; line-height: 1.45; margin-bottom: 5px; }
+  .promise-list-inner .promise-row { display: flex; gap: 6px; margin-bottom: 5px; }
+  .promise-list-inner .promise-row:last-child { margin-bottom: 0; }
+  .promise-list-inner .promise-num { flex-shrink: 0; min-width: 1.5em; text-align: right; color: var(--text-muted); font-weight: 700; font-size: 0.8rem; line-height: 1.6; }
+  .promise-list-inner .promise-body { font-size: 0.8rem; line-height: 1.6; color: var(--text); }
   .promise-list-empty {
     font-size: 0.78rem; color: var(--text-muted); text-align: center; padding: 4px 0;
   }
@@ -867,7 +875,7 @@ function backToTop() {
   .radar-head .sub { font-size: 0.66rem; opacity: .9; margin-top: 2px; font-weight: 500; }
   .radar-type { display: flex; align-items: center; gap: 10px; padding: 13px 16px 6px; }
   .radar-type .emoji { font-size: 1.7rem; line-height: 1; }
-  .radar-type .tt { font-size: 1.02rem; font-weight: 900; color: var(--accent); }
+  .radar-type .tt { font-size: 0.95rem; font-weight: 900; color: var(--accent); line-height: 1.25; min-width: 0; }
   .radar-type .score { margin-left: auto; font-size: 0.66rem; color: var(--text-muted); font-weight: 700; text-align: right; }
   .radar-type .score b { display: block; font-size: 1.15rem; color: var(--text); font-weight: 900; }
   .radar-svg-wrap { padding: 2px 6px 6px; }
@@ -896,6 +904,48 @@ function backToTop() {
 </style>
 </head>
 <body>
+<!-- モーダル類（どの画面にも属さないようbody直下に配置）-->
+<!-- このサイトについてモーダル -->
+<div class="dev-modal-overlay" id="devModalOverlay" onclick="closeDevModal(event)">
+  <div class="dev-modal">
+    <button class="dev-modal-close" onclick="closeDevModal()">✕</button>
+    <div class="dev-modal-title">このサイトについて</div>
+    <div class="dev-modal-body">
+      <p>加古川市在住の<strong>加古川市議会議員マップ・石原英一</strong>が個人で制作・運営しています。</p>
+      <p>特定の政党・団体からの資金援助・広告収入はありません。候補者と面識がある場合もありますが、採点は選挙公報などの公開情報をAIが分析する共通基準で行っており、個人的な関係が評価に影響しない設計にしています。</p>
+      <p>有権者が候補者の公約を比較・検討しやすくなることを目的としています。</p>
+      <p>現職候補については、別サイト「加古川市議会通信簿」（kakogawa-giin-map.com）の4年間の活動実績データと連携しています。</p>
+    </div>
+    <button class="modal-close" onclick="closeDevModal()">閉じる</button>
+  </div>
+</div>
+
+<!-- はじめての方へモーダル -->
+<div class="dev-modal-overlay" id="guideModalOverlay" onclick="closeGuideModal(event)">
+  <div class="dev-modal">
+    <button class="dev-modal-close" onclick="closeGuideModal()">✕</button>
+    <div class="dev-modal-title">はじめての方へ</div>
+    <div class="dev-modal-body">
+      <p>このサイトでは、加古川市議会議員選挙の候補者情報を掲載しています。</p>
+      <p>「名前で探す」から候補者を選ぶと、公約の詳細・AI分析・インタビュー（実施した方のみ）を確認できます。</p>
+      <p>現職候補については、過去4年間の議会活動実績（加古川市議会通信簿）へのリンクもあります。</p>
+      <p>投票日は2026年6月28日です。ぜひ候補者の言葉を確認してから投票に行ってください。</p>
+    </div>
+    <button class="modal-close" onclick="closeGuideModal()">閉じる</button>
+  </div>
+</div>
+
+
+<div class="dev-modal-overlay" id="interviewCommentOverlay" onclick="closeInterviewComment()">
+  <div class="dev-modal" style="max-width:420px;">
+    <button class="dev-modal-close" onclick="closeInterviewComment()">✕</button>
+    <div class="dev-modal-title">インタビューについて</div>
+    <div class="dev-modal-body">
+      <p id="interviewCommentText"></p>
+    </div>
+    <button class="modal-close" onclick="closeInterviewComment()">閉じる</button>
+  </div>
+</div>
 
 <!-- ===== トップ選択画面 ===== -->
 <div id="screenTop">
@@ -2340,47 +2390,6 @@ function backToTop() {
 </div><!-- /#commonFooter -->
 
 
-<!-- このサイトについてモーダル -->
-<div class="dev-modal-overlay" id="devModalOverlay" onclick="closeDevModal(event)">
-  <div class="dev-modal">
-    <button class="dev-modal-close" onclick="closeDevModal()">✕</button>
-    <div class="dev-modal-title">このサイトについて</div>
-    <div class="dev-modal-body">
-      <p>加古川市在住の<strong>加古川市議会議員マップ・石原英一</strong>が個人で制作・運営しています。</p>
-      <p>特定の政党・団体からの資金援助・広告収入はありません。候補者と面識がある場合もありますが、採点は選挙公報などの公開情報をAIが分析する共通基準で行っており、個人的な関係が評価に影響しない設計にしています。</p>
-      <p>有権者が候補者の公約を比較・検討しやすくなることを目的としています。</p>
-      <p>現職候補については、別サイト「加古川市議会通信簿」（kakogawa-giin-map.com）の4年間の活動実績データと連携しています。</p>
-    </div>
-    <button class="modal-close" onclick="closeDevModal()">閉じる</button>
-  </div>
-</div>
-
-<!-- はじめての方へモーダル -->
-<div class="dev-modal-overlay" id="guideModalOverlay" onclick="closeGuideModal(event)">
-  <div class="dev-modal">
-    <button class="dev-modal-close" onclick="closeGuideModal()">✕</button>
-    <div class="dev-modal-title">はじめての方へ</div>
-    <div class="dev-modal-body">
-      <p>このサイトでは、加古川市議会議員選挙の候補者情報を掲載しています。</p>
-      <p>「名前で探す」から候補者を選ぶと、公約の詳細・AI分析・インタビュー（実施した方のみ）を確認できます。</p>
-      <p>現職候補については、過去4年間の議会活動実績（加古川市議会通信簿）へのリンクもあります。</p>
-      <p>投票日は2026年6月28日です。ぜひ候補者の言葉を確認してから投票に行ってください。</p>
-    </div>
-    <button class="modal-close" onclick="closeGuideModal()">閉じる</button>
-  </div>
-</div>
-
-
-<div class="dev-modal-overlay" id="interviewCommentOverlay" onclick="closeInterviewComment()">
-  <div class="dev-modal" style="max-width:420px;">
-    <button class="dev-modal-close" onclick="closeInterviewComment()">✕</button>
-    <div class="dev-modal-title">インタビューについて</div>
-    <div class="dev-modal-body">
-      <p id="interviewCommentText"></p>
-    </div>
-    <button class="modal-close" onclick="closeInterviewComment()">閉じる</button>
-  </div>
-</div>
 
 <script>
 // ===== データ =====
@@ -3398,30 +3407,40 @@ function buildRadarAxes(P, S, intvScore, siteBonus, isIncumbent, emo, promCount)
   return axes;
 }
 
-// 軸の分布からタイプを機械的に判定（再現性重視・断定しない）
+// 軸の分布から「形のタイプ」を機械的に判定（再現性重視・断定しない・ポップ表記）
+// しきい値はここで調整可：GAP_TOKKA=特化/二刀流の境（10〜12目安）、SPREAD_BALANCE=バランス判定の幅
 function classifyRadar(axes) {
+  const NICK = {
+    '理念・情熱':      { nick:'ビジョナリー',     emoji:'🔥',  short:'理念' },
+    '政策力':          { nick:'ポリシーメーカー', emoji:'🛠️', short:'政策' },
+    '守備範囲・総合性': { nick:'オールラウンダー', emoji:'🗺️', short:'守備' },
+    '発信・説明力':    { nick:'スピーカー',       emoji:'📣',  short:'発信' },
+    '対話・調整力':    { nick:'コネクター',       emoji:'🤝',  short:'対話' }
+  };
+  const ORDER = ['理念・情熱','政策力','守備範囲・総合性','発信・説明力','対話・調整力'];
+  const GAP_TOKKA = 10;
+  const SPREAD_BALANCE = 12;
   const sorted = axes.slice().sort((a,b)=>b.val-a.val);
-  const top = sorted[0], second = sorted[1], low = sorted[sorted.length-1];
-  const avg = Math.round(axes.reduce((s,a)=>s+a.val,0)/axes.length);
-  const spread = top.val - low.val;
-  const contentPeak = Math.max.apply(null, axes.filter(function(a){return a.key!=='対話・調整力';}).map(function(a){return a.val;}));
-  let emoji='🧭', type='オールラウンドタイプ', lead='特定の軸に偏らず、全体にバランスのとれた傾向です。';
-  if (contentPeak < 35) {
-    emoji='🌱'; type='これからタイプ'; lead='現時点では参考にできるデータが少なく、傾向の確度は低めです。';
-  } else if (spread <= 12) {
-    emoji='🧭'; type='オールラウンドタイプ'; lead='特定の軸に偏らず、全体にバランスのとれた傾向です。';
-  } else if (top.key==='政策力') {
-    emoji='🛠️'; type='政策タイプ'; lead='公約の具体性や市政との結びつき、実現性が相対的に強く、政策の深さに軸足がある傾向です。';
-  } else if (top.key==='守備範囲・総合性') {
-    emoji='🗺️'; type='総合・守備範囲タイプ'; lead='幅広い分野を公約でカバーし、情報の告知・共有も行う、扱う範囲の広さに特徴がある傾向です。';
-  } else if (top.key==='発信・説明力') {
-    emoji='📣'; type='発信・説明タイプ'; lead='発信の量や分かりやすい説明など、有権者に伝える動きに特徴がある傾向です。';
-  } else if (top.key==='理念・情熱') {
-    emoji='🔥'; type='理念・ビジョンタイプ'; lead='感情・価値を込めた言葉で理念やビジョンを前面に出す傾向です。';
-  } else if (top.key==='対話・調整力') {
-    emoji='🤝'; type='調整・現場タイプ'; lead='発信での主張・想いの言語化や現職経験など、対話・調整の材料が比較的そろっている傾向です。';
+  const top1 = sorted[0], top2 = sorted[1], low = sorted[sorted.length-1];
+  const spread = top1.val - low.val;
+  const gap12 = top1.val - top2.val;
+  let emoji, type, lead;
+  if (top1.val < 35) {
+    emoji='🌱'; type='未知数';
+    lead='参考にできるデータが現時点で少なく、形の確度は低めです。';
+  } else if (spread <= SPREAD_BALANCE) {
+    emoji='🧭'; type='バランス型';
+    lead='5軸が平均的にそろう、大きな凸凹の少ない形です。';
+  } else if (gap12 >= GAP_TOKKA) {
+    const k = NICK[top1.key];
+    emoji=k.emoji; type=k.nick;
+    lead='5軸の中で「'+top1.key+'」が最も高く突出する形です。';
+  } else {
+    const pair = [top1.key, top2.key].sort((a,b)=>ORDER.indexOf(a)-ORDER.indexOf(b));
+    emoji='⚔️'; type=NICK[pair[0]].short+'×'+NICK[pair[1]].short+'の二刀流';
+    lead='「'+top1.key+'」と「'+top2.key+'」の2軸が高く、拮抗する形です。';
   }
-  const diag = top.key+'('+top.val+')が最も高く、'+second.key+'('+second.val+')がそれに続きます。一方で'+low.key+'('+low.val+')が最も低い傾向です。'+lead+'数値はいずれも既存スコアからの機械的な参考値で、人物像を断定するものではありません。';
+  const diag = top1.key+'('+top1.val+')が最も高く、'+top2.key+'('+top2.val+')がそれに続きます。一方で'+low.key+'('+low.val+')が最も低い傾向です。'+lead+'これはレーダーの形の傾向を表す参考表示で、数値は既存スコアからの機械的な算出値です。人物の優劣や能力を断定するものではありません。';
   return { emoji:emoji, type:type, diag:diag };
 }
 
@@ -3456,8 +3475,8 @@ function drawRadar(svg, axes) {
 function fillRadarMeta(prefix, m, axes, info) {
   const avg = Math.round(axes.reduce((s,a)=>s+a.val,0)/axes.length);
   document.getElementById(prefix+'Avg').textContent = avg;
-  document.getElementById(prefix+'Emoji').textContent = info.emoji;
-  document.getElementById(prefix+'Type').textContent = info.type;
+  const _emojiEl = document.getElementById(prefix+'Emoji'); if (_emojiEl) _emojiEl.textContent = info.emoji;
+  const _typeEl = document.getElementById(prefix+'Type'); if (_typeEl) _typeEl.textContent = info.type;
   document.getElementById(prefix+'Sub').textContent = (m.name ? m.name + ' ／ ' : '') + '公約・発信・インタビューの分析から自動算出';
   document.getElementById(prefix+'Diag').innerHTML = info.diag;
   const tb = document.getElementById(prefix+'Basis');
@@ -3694,9 +3713,25 @@ function setupPromiseList(promises, btnId, wrapId, innerId) {
   btn.classList.remove('open');
   if (promises && promises.length > 0) {
     btn.disabled = false;
-    let html = '<ol>';
-    promises.forEach(function(p){ html += '<li>' + p + '</li>'; });
-    html += '</ol>';
+    let html = '';
+    let num = 0;
+    let lastHead = '\u0000init';
+    let openGroup = false;
+    promises.forEach(function(p){
+      num++;
+      var mm = String(p).match(/^\s*【(.+?)】(.*)$/);
+      var head = mm ? mm[1] : '';
+      var body = mm ? mm[2].replace(/^[\s：:　・]+/, '') : String(p);
+      if (head !== lastHead) {
+        if (openGroup) html += '</div>';
+        html += '<div class="promise-group">';
+        if (head) html += '<div class="promise-head">' + head + '</div>';
+        openGroup = true;
+        lastHead = head;
+      }
+      html += '<div class="promise-row"><span class="promise-num">' + num + '.</span><span class="promise-body">' + body + '</span></div>';
+    });
+    if (openGroup) html += '</div>';
     inner.innerHTML = html;
   } else {
     btn.disabled = true;
